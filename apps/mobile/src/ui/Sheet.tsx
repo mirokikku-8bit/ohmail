@@ -145,7 +145,11 @@ export function SheetBackdrop({ label, onPress }: { label: string; onPress: () =
   );
 }
 
-/** One verb, one row. `on` draws the check — the tag sheet's assigned mark. */
+/**
+ * One verb, one row. A row given `on` is a checkbox whose state is read out. On a row with no icon
+ * (the Tag sheet's) the check stands in the icon's place, before the name: at the far end it went
+ * unseen, and a tap removed the tag a person meant to add.
+ */
 export function SheetRow({
   label,
   detail,
@@ -169,7 +173,8 @@ export function SheetRow({
   return (
     <Tap
       onPress={onPress}
-      accessibilityRole="button"
+      accessibilityRole={on === undefined ? "button" : "checkbox"}
+      accessibilityState={on === undefined ? undefined : { checked: on }}
       accessibilityLabel={detail === undefined ? label : Copy.ariaLabelDetail(label, detail)}
       style={({ pressed }) => ({
         flexDirection: "row",
@@ -180,6 +185,9 @@ export function SheetRow({
         backgroundColor: pressed ? t.c.tint : "transparent",
       })}
     >
+      {on !== undefined && !icon ? (
+        <View style={{ width: 14 }}>{on ? <Icon name="check" size={14} color={t.c.accentInk} /> : null}</View>
+      ) : null}
       {icon ? <Icon name={icon} size={14} color={t.c.ink2} /> : null}
       <Txt variant="button" style={{ flexShrink: 1 }}>
         {label}
@@ -190,7 +198,7 @@ export function SheetRow({
           {detail}
         </Txt>
       )}
-      {on ? <Icon name="check" size={14} color={t.c.accentInk} /> : null}
+      {on && icon ? <Icon name="check" size={14} color={t.c.accentInk} /> : null}
     </Tap>
   );
 }
