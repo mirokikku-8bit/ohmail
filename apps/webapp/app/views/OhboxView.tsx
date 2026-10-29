@@ -859,6 +859,7 @@ export function OhboxView({
     () => shown.filter((m) => picked.has(m.id)).map((m) => m.id),
     [shown, picked],
   );
+  const pickedRowCount = [...navRows, ...olderRows].filter((g) => g.members.some((m) => picked.has(m.id))).length;
 
   /**
    * Run a bulk verb and drop the selection.
@@ -2479,6 +2480,7 @@ export function OhboxView({
             <SelectionPill
               ids={pickedIds}
               count={pickedIds.length}
+              rows={pickedRowCount}
               panel={pickPanel}
               onPanel={setPickPanel}
               onRun={runBulk}
@@ -2738,6 +2740,7 @@ export function OhboxView({
 function SelectionPill({
   ids,
   count,
+  rows,
   panel,
   onPanel,
   onRun,
@@ -2750,6 +2753,8 @@ function SelectionPill({
   ids: string[];
   /** The number of MESSAGES picked — `ids.length`, passed so the caller owns the sentence. */
   count: number;
+  /** The ROWS picked: a folded conversation is one, as the person picked it. */
+  rows: number;
   panel: PickPanel | null;
   onPanel: (next: PickPanel | null) => void;
   onRun: (action: BulkAction) => void;
@@ -3020,11 +3025,11 @@ function SelectionPill({
         <button
           type="button"
           className="abar-b abar-solo abar-count"
-          aria-label={t("pickedAria", { count })}
+          aria-label={t("pickedAria", { count: rows })}
           onClick={onClear}
         >
           <span aria-hidden="true">×</span>
-          <span role="status">{count}</span>
+          <span role="status">{rows}</span>
           <span className="abar-count-word">{t("pickedWord")}</span>
           <Kbd>esc</Kbd>
         </button>

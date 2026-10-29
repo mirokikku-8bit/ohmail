@@ -1956,6 +1956,8 @@ export interface UnscreenedGroupDTO {
    * a document. Identical on every row of one refresh; a stale row is replaced wholesale.
    */
   total: number;
+  /** False when `total` is a floor (the server's walk stopped at its bound); carried like `total`. */
+  complete?: boolean;
 }
 
 /**
